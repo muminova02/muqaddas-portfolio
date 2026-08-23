@@ -1,23 +1,23 @@
 import { Check, ExternalLink, FileText, Github, Terminal } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Project, ProjectLink } from "../data/portfolio";
 import { PROJECTS } from "../data/portfolio";
 import Reveal from "./Reveal";
 
 function LinkButton({ link, primary }: { link: ProjectLink; primary: boolean }) {
-  const icon =
-    link.label.includes("Live") ? (
-      <ExternalLink className="h-4 w-4" aria-hidden="true" />
-    ) : link.label.includes("Source") ? (
-      <Github className="h-4 w-4" aria-hidden="true" />
-    ) : (
-      <FileText className="h-4 w-4" aria-hidden="true" />
-    );
+  const icon = link.label.includes("Live") ? (
+    <ExternalLink className="h-4 w-4" aria-hidden="true" />
+  ) : link.label.includes("Source") ? (
+    <Github className="h-4 w-4" aria-hidden="true" />
+  ) : (
+    <FileText className="h-4 w-4" aria-hidden="true" />
+  );
   return (
     <a
       href={link.href}
       target="_blank"
       rel="noreferrer"
-      className={primary ? "btn-primary" : "btn-outline"}
+      className={primary ? "btn-primary !py-2.5" : "btn-outline !py-2.5"}
     >
       {icon}
       {link.label}
@@ -25,58 +25,77 @@ function LinkButton({ link, primary }: { link: ProjectLink; primary: boolean }) 
   );
 }
 
-function TechnicalVisual() {
-  return (
-    <div className="overflow-hidden rounded-xl border border-black/[0.08] bg-ink">
-      <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
-        <Terminal className="h-4 w-4 text-indigo-300" aria-hidden="true" />
-        <span className="text-xs font-medium text-white/60">flowdesk-api</span>
+function Visual({ project }: { project: Project }) {
+  if (project.technical) {
+    return (
+      <div className="glass group relative overflow-hidden p-1">
+        <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0a0b12]">
+          <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
+            <Terminal className="h-4 w-4 text-violet" aria-hidden="true" />
+            <span className="text-xs font-medium text-muted">flowdesk-api</span>
+          </div>
+          <pre className="overflow-x-auto px-4 py-4 text-[12.5px] leading-relaxed">
+            <code>
+              <span className="text-coral">POST</span>{" "}
+              <span className="text-primary">/api/v1/auth/login</span>
+              <span className="text-muted">        → JWT access token</span>
+              {"\n"}
+              <span className="text-indigo">GET</span>{" "}
+              <span className="text-primary">/api/v1/leads?status=new</span>
+              <span className="text-muted">  → filtered + paginated</span>
+              {"\n"}
+              <span className="text-magenta">PATCH</span>{" "}
+              <span className="text-primary">/api/v1/leads/{"{id}"}/status</span>
+              <span className="text-muted"> → validated workflow</span>
+              {"\n\n"}
+              <span className="text-muted">Router → Service → SQLAlchemy → PostgreSQL</span>
+            </code>
+          </pre>
+        </div>
       </div>
-      <pre className="overflow-x-auto px-4 py-4 text-[13px] leading-relaxed text-indigo-100">
-        <code>{`POST /api/v1/auth/login        → JWT access token
-GET  /api/v1/leads?status=new  → filtered + paginated
-PATCH /api/v1/leads/{id}/status → validated workflow
-GET  /api/v1/dashboard/summary → RBAC-protected
-
-Router → Service (business rules) → SQLAlchemy → PostgreSQL`}</code>
-      </pre>
+    );
+  }
+  return (
+    <div className="glass group overflow-hidden p-0">
+      <div className="aspect-[16/10] overflow-hidden">
+        <img
+          src={project.image}
+          alt={`${project.name} interface`}
+          loading="lazy"
+          className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
+        />
+      </div>
     </div>
   );
 }
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectRow({ project, index }: { project: Project; index: number }) {
+  const reversed = index % 2 === 1;
   return (
-    <article className="card flex flex-col overflow-hidden">
-      {project.image ? (
-        <div className="aspect-[16/9] overflow-hidden border-b border-black/[0.06] bg-black/[0.03]">
-          <img
-            src={project.image}
-            alt={`${project.name} interface`}
-            loading="lazy"
-            className="h-full w-full object-cover object-top"
-          />
-        </div>
-      ) : null}
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.55, ease: "easeOut" }}
+      className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12"
+    >
+      <div className={reversed ? "lg:order-2" : ""}>
+        <Visual project={project} />
+      </div>
 
-      <div className="flex flex-1 flex-col p-6">
-        <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-xl font-bold text-ink">{project.name}</h3>
+      <div className={reversed ? "lg:order-1" : ""}>
+        <div className="mb-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h3 className="text-2xl font-bold text-primary sm:text-3xl">{project.name}</h3>
           {project.role ? (
-            <span className="text-xs font-medium text-ink/50">{project.role}</span>
+            <span className="text-xs font-medium text-violet">{project.role}</span>
           ) : null}
         </div>
-        <p className="text-sm leading-relaxed text-ink/70">{project.tagline}</p>
+        <p className="text-base leading-relaxed text-muted">{project.tagline}</p>
 
-        {project.technical ? (
-          <div className="mt-4">
-            <TechnicalVisual />
-          </div>
-        ) : null}
-
-        <ul className="mt-4 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+        <ul className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {project.highlights.map((h) => (
-            <li key={h} className="flex items-start gap-2 text-sm text-ink/70">
-              <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent" aria-hidden="true" />
+            <li key={h} className="flex items-start gap-2 text-sm text-muted">
+              <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-violet" aria-hidden="true" />
               {h}
             </li>
           ))}
@@ -90,36 +109,34 @@ function ProjectCard({ project }: { project: Project }) {
           ))}
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2 pt-1">
+        <div className="mt-6 flex flex-wrap gap-2.5">
           {project.links.map((link, i) => (
             <LinkButton key={link.href} link={link} primary={i === 0} />
           ))}
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
 export default function Projects() {
   return (
-    <section id="projects" className="py-20 sm:py-24">
+    <section id="projects" className="py-24 sm:py-28">
       <div className="container-content">
         <Reveal>
           <p className="section-label">Selected Work</p>
-          <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+          <h2 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">
             Featured Projects
           </h2>
-          <p className="mt-3 max-w-2xl text-ink/60">
-            Real, shipped products and backend systems — from production-style APIs
-            to AI-powered and interactive platforms.
+          <p className="mt-4 max-w-2xl text-muted">
+            Real, shipped products and backend systems — from production-style APIs to
+            AI-powered and interactive platforms.
           </p>
         </Reveal>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="mt-14 flex flex-col gap-20">
           {PROJECTS.map((project, i) => (
-            <Reveal key={project.name} delay={i * 0.05}>
-              <ProjectCard project={project} />
-            </Reveal>
+            <ProjectRow key={project.name} project={project} index={i} />
           ))}
         </div>
       </div>

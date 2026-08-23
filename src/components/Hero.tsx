@@ -1,63 +1,133 @@
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Github } from "lucide-react";
+import { ArrowRight, Download, Github } from "lucide-react";
+
+const FLOATING = [
+  { label: "FastAPI", className: "left-[6%] top-[26%]", delay: "0s" },
+  { label: "PostgreSQL", className: "right-[8%] top-[22%]", delay: "1.2s" },
+  { label: "Python", className: "left-[12%] bottom-[16%]", delay: "0.6s" },
+  { label: "React", className: "right-[10%] bottom-[20%]", delay: "1.8s" },
+  { label: "JWT · RBAC", className: "left-[2%] top-[54%]", delay: "2.4s" },
+  { label: "Docker", className: "right-[3%] top-[52%]", delay: "0.9s" },
+];
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
 
 export default function Hero() {
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  // Subtle mouse-reactive glow — skipped for reduced-motion / coarse pointers.
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    if (reduce || coarse || !glowRef.current) return;
+    const el = glowRef.current;
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        el.style.setProperty("--mx", `${e.clientX}px`);
+        el.style.setProperty("--my", `${e.clientY}px`);
+      });
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <section id="top" className="relative overflow-hidden">
-      {/* subtle gradient wash */}
+    <section id="top" className="relative flex min-h-[92vh] items-center overflow-hidden">
+      {/* mouse-reactive glow */}
       <div
+        ref={glowRef}
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-0 -z-10 hidden md:block"
         style={{
           background:
-            "radial-gradient(60% 50% at 50% 0%, rgba(79,70,229,0.08), transparent 70%)",
+            "radial-gradient(320px circle at var(--mx, 50%) var(--my, 30%), rgba(139,92,246,0.10), transparent 70%)",
         }}
       />
-      <div className="container-content pb-16 pt-20 sm:pt-28">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-3xl"
-        >
-          <span className="chip mb-5">
-            Open to remote Full-Stack / Python Backend opportunities
+
+      {/* decorative floating tech chips */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 hidden lg:block">
+        {FLOATING.map((f) => (
+          <span
+            key={f.label}
+            className={`chip absolute animate-float bg-white/[0.05] ${f.className}`}
+            style={{ animationDelay: f.delay }}
+          >
+            {f.label}
           </span>
-
-          <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-6xl">
-            Muqaddas Muminova
-          </h1>
-          <p className="mt-3 text-xl font-semibold text-accent sm:text-2xl">
-            AI-Assisted Full-Stack Developer
-          </p>
-          <p className="mt-2 text-sm font-medium text-ink/60 sm:text-base">
-            Python · FastAPI · Django/DRF · React · PostgreSQL
-          </p>
-
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink/70 sm:text-lg">
-            I build and ship full-stack products, backend systems, AI-powered
-            applications, and interactive platforms. I use modern AI development
-            tools to move quickly — while manually reviewing, debugging, testing,
-            and validating the final implementation.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#projects" className="btn-accent">
-              View Projects
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </a>
-            <a
-              href="https://github.com/muminova02"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-outline"
-            >
-              <Github className="h-4 w-4" aria-hidden="true" />
-              GitHub
-            </a>
-          </div>
-        </motion.div>
+        ))}
       </div>
+
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="container-content flex flex-col items-center py-20 text-center"
+      >
+        <motion.span variants={item} className="chip mb-6">
+          <span className="mr-2 h-1.5 w-1.5 rounded-full bg-coral" />
+          Open to remote Full-Stack / Python Backend opportunities
+        </motion.span>
+
+        <motion.h1
+          variants={item}
+          className="max-w-4xl text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-7xl"
+        >
+          Muqaddas <span className="gradient-text">Muminova</span>
+        </motion.h1>
+
+        <motion.p
+          variants={item}
+          className="mt-5 text-xl font-semibold text-primary sm:text-2xl"
+        >
+          AI-Assisted Full-Stack Developer
+        </motion.p>
+
+        <motion.p variants={item} className="mt-3 text-sm font-medium text-muted sm:text-base">
+          Python · FastAPI · Django/DRF · React · PostgreSQL
+        </motion.p>
+
+        <motion.p
+          variants={item}
+          className="mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg"
+        >
+          I build full-stack products, backend systems, AI-powered applications, and
+          interactive digital experiences — with a strong focus on Python, FastAPI, and
+          business-oriented backend architecture.
+        </motion.p>
+
+        <motion.div variants={item} className="mt-9 flex flex-wrap justify-center gap-3">
+          <a href="#projects" className="btn-primary">
+            View Projects
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+          <a
+            href="https://github.com/muminova02"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-outline"
+          >
+            <Github className="h-4 w-4" aria-hidden="true" />
+            GitHub
+          </a>
+          <a href="/cv.pdf" download className="btn-outline">
+            <Download className="h-4 w-4" aria-hidden="true" />
+            Download CV
+          </a>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

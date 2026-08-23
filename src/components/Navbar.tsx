@@ -22,15 +22,15 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-colors ${
+      className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-black/[0.06] bg-[#faf9f7]/85 backdrop-blur-md"
-          : "border-transparent bg-transparent"
+          ? "border-b border-white/10 bg-base/70 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
       <nav className="container-content flex h-16 items-center justify-between">
-        <a href="#top" className="font-bold tracking-tight text-ink">
-          Muqaddas Muminova
+        <a href="#top" className="font-bold tracking-tight text-primary">
+          Muqaddas <span className="gradient-text">Muminova</span>
         </a>
 
         <div className="hidden items-center gap-7 md:flex">
@@ -38,19 +38,19 @@ export default function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className="text-sm font-medium text-ink/70 transition-colors hover:text-ink"
+              className="text-sm font-medium text-muted transition-colors hover:text-primary"
             >
               {l.label}
             </a>
           ))}
-          <a href="/cv.pdf" download className="btn-outline">
+          <a href="/cv.pdf" download className="btn-outline !px-4 !py-2">
             <Download className="h-4 w-4" aria-hidden="true" />
             Download CV
           </a>
         </div>
 
         <button
-          className="rounded-md p-2 text-ink md:hidden"
+          className="rounded-md p-2 text-primary md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
@@ -60,19 +60,19 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="border-t border-black/[0.06] bg-[#faf9f7] md:hidden">
+        <div className="border-t border-white/10 bg-base/95 backdrop-blur-xl md:hidden">
           <div className="container-content flex flex-col gap-1 py-3">
             {LINKS.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-2 text-sm font-medium text-ink/80 hover:bg-black/[0.04]"
+                className="rounded-md px-2 py-2 text-sm font-medium text-muted hover:bg-white/5 hover:text-primary"
               >
                 {l.label}
               </a>
             ))}
-            <a href="/cv.pdf" download className="btn-outline mt-2 w-full">
+            <a href="/cv.pdf" download className="btn-outline mt-2 w-full !py-2">
               <Download className="h-4 w-4" aria-hidden="true" />
               Download CV
             </a>
