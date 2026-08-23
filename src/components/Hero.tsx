@@ -132,7 +132,7 @@ export default function Hero() {
             <Github className="h-4 w-4" aria-hidden="true" />
             GitHub
           </a>
-          <a href="/cv.pdf" download className="btn-outline">
+          <a href="/Muqaddas_Muminova_CV.pdf" download className="btn-outline">
             <Download className="h-4 w-4" aria-hidden="true" />
             Download CV
           </a>

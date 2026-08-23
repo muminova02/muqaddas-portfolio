@@ -43,7 +43,7 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
-          <a href="/cv.pdf" download className="btn-outline !px-4 !py-2">
+          <a href="/Muqaddas_Muminova_CV.pdf" download className="btn-outline !px-4 !py-2">
             <Download className="h-4 w-4" aria-hidden="true" />
             Download CV
           </a>
@@ -72,7 +72,7 @@ export default function Navbar() {
                 {l.label}
               </a>
             ))}
-            <a href="/cv.pdf" download className="btn-outline mt-2 w-full !py-2">
+            <a href="/Muqaddas_Muminova_CV.pdf" download className="btn-outline mt-2 w-full !py-2">
               <Download className="h-4 w-4" aria-hidden="true" />
               Download CV
             </a>
