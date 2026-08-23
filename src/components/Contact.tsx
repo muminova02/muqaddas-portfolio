@@ -1,8 +1,9 @@
-import { Github, Linkedin, Mail, Send } from "lucide-react";
+import { Github, Globe, Linkedin, Mail, Send } from "lucide-react";
 import { CONTACTS } from "../data/portfolio";
 import Reveal from "./Reveal";
 
 const ICONS: Record<string, typeof Mail> = {
+  Website: Globe,
   Email: Mail,
   GitHub: Github,
   LinkedIn: Linkedin,

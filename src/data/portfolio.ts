@@ -157,6 +157,7 @@ export const EDUCATION = {
 };
 
 export const CONTACTS = [
+  { label: "Website", value: "muminova.uz", href: "https://muminova.uz" },
   { label: "Email", value: "muminova.2m@gmail.com", href: "mailto:muminova.2m@gmail.com" },
   { label: "GitHub", value: "github.com/muminova02", href: "https://github.com/muminova02" },
   {
