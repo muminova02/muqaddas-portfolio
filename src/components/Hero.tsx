@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Download, Github } from "lucide-react";
+import HeroFluid from "./HeroFluid";
 
 const FLOATING = [
   { label: "FastAPI", className: "left-[6%] top-[26%]", delay: "0s" },
@@ -46,8 +47,10 @@ export default function Hero() {
 
   return (
     <section id="top" className="relative flex min-h-[92vh] items-center overflow-hidden">
-      {/* flowing gradient ribbon (primary hero motion) */}
-      <div className="hero-wave" aria-hidden="true" />
+      {/* liquid-silk fluid ribbon (primary hero motion) */}
+      <HeroFluid />
+      {/* dark veil behind central text for readability */}
+      <div className="hero-veil" aria-hidden="true" />
 
       {/* mouse-reactive glow */}
       <div
@@ -61,7 +64,7 @@ export default function Hero() {
       />
 
       {/* decorative floating tech chips */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 hidden lg:block">
+      <div aria-hidden="true" className="absolute inset-0 -z-10 hidden opacity-60 lg:block">
         {FLOATING.map((f) => (
           <span
             key={f.label}
@@ -100,7 +103,8 @@ export default function Hero() {
 
         <motion.p
           variants={item}
-          className="mt-3 text-sm font-semibold tracking-wide text-[#B7BDCC] transition-colors hover:text-primary sm:text-base"
+          style={{ color: "#C0C6D6" }}
+          className="mt-3 text-sm font-semibold tracking-wide sm:text-base"
         >
           Python · FastAPI · Django/DRF · React · PostgreSQL
         </motion.p>
