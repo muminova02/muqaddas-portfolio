@@ -25,45 +25,91 @@ function LinkButton({ link, primary }: { link: ProjectLink; primary: boolean }) 
   );
 }
 
-function Visual({ project }: { project: Project }) {
-  if (project.technical) {
-    return (
-      <div className="glass group relative overflow-hidden p-1">
-        <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0a0b12]">
-          <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
-            <Terminal className="h-4 w-4 text-violet" aria-hidden="true" />
-            <span className="text-xs font-medium text-muted">flowdesk-api</span>
+function liveLabel(project: Project): string {
+  const live = project.links.find((l) => l.label.includes("Live"));
+  if (live) return live.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  return project.name.toLowerCase().replace(/\s+/g, "-");
+}
+
+function TechnicalVisual() {
+  return (
+    <div className="showcase group">
+      <div className="glass overflow-hidden p-0 transition-transform duration-500 group-hover:-translate-y-1">
+        <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+          <span className="h-2.5 w-2.5 rounded-full bg-coral/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-violet/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-indigo/70" />
+          <span className="ml-2 flex items-center gap-1.5 text-xs font-medium text-muted">
+            <Terminal className="h-3.5 w-3.5" aria-hidden="true" />
+            flowdesk-api
+          </span>
+        </div>
+
+        <div className="bg-[#0a0b12] px-5 py-5">
+          {/* animated request pulse */}
+          <div className="relative mb-4 h-px w-full overflow-hidden rounded bg-white/10">
+            <motion.span
+              aria-hidden="true"
+              className="absolute inset-y-0 left-0 w-1/3 rounded bg-gradient-to-r from-transparent via-violet to-transparent"
+              initial={{ x: "-40%" }}
+              animate={{ x: "340%" }}
+              transition={{ duration: 2.6, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.6 }}
+            />
           </div>
-          <pre className="overflow-x-auto px-4 py-4 text-[12.5px] leading-relaxed">
+
+          <pre className="overflow-x-auto text-[12.5px] leading-relaxed">
             <code>
-              <span className="text-coral">POST</span>{" "}
-              <span className="text-primary">/api/v1/auth/login</span>
-              <span className="text-muted">        → JWT access token</span>
-              {"\n"}
               <span className="text-indigo">GET</span>{" "}
-              <span className="text-primary">/api/v1/leads?status=new</span>
-              <span className="text-muted">  → filtered + paginated</span>
+              <span className="text-primary">/api/v1/leads</span>
+              <span className="text-muted">          → filtered · paginated</span>
               {"\n"}
               <span className="text-magenta">PATCH</span>{" "}
               <span className="text-primary">/api/v1/leads/{"{id}"}/status</span>
               <span className="text-muted"> → validated workflow</span>
-              {"\n\n"}
-              <span className="text-muted">Router → Service → SQLAlchemy → PostgreSQL</span>
             </code>
           </pre>
+
+          <div className="mt-5 space-y-1 text-[13px] font-medium text-muted">
+            <div className="text-primary">FastAPI</div>
+            <div className="pl-3 text-violet/80">↓ Service / Business Rules</div>
+            <div className="pl-3 text-violet/80">↓ SQLAlchemy</div>
+            <div className="pl-3 text-indigo/80">↓ PostgreSQL</div>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-1.5">
+            <span className="chip border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
+              20 tests · CI green
+            </span>
+            <span className="chip">JWT · RBAC</span>
+          </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+function Visual({ project }: { project: Project }) {
+  if (project.technical) return <TechnicalVisual />;
   return (
-    <div className="glass group overflow-hidden p-0">
-      <div className="aspect-[16/10] overflow-hidden">
-        <img
-          src={project.image}
-          alt={`${project.name} interface`}
-          loading="lazy"
-          className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
-        />
+    <div className="showcase group [perspective:1200px]">
+      <div className="glass overflow-hidden p-2 transition-transform duration-500 group-hover:-translate-y-1">
+        {/* minimal browser bar */}
+        <div className="flex items-center gap-1.5 px-2 py-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+          <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+          <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+          <span className="ml-2 truncate rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[11px] text-muted">
+            {liveLabel(project)}
+          </span>
+        </div>
+        <div className="overflow-hidden rounded-xl border border-white/10">
+          <img
+            src={project.image}
+            alt={`${project.name} interface`}
+            loading="lazy"
+            className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        </div>
       </div>
     </div>
   );
@@ -129,12 +175,11 @@ export default function Projects() {
             Featured Projects
           </h2>
           <p className="mt-4 max-w-2xl text-muted">
-            Real, shipped products and backend systems — from production-style APIs to
-            AI-powered and interactive platforms.
+            Projects built across AI, backend systems, and interactive products.
           </p>
         </Reveal>
 
-        <div className="mt-14 flex flex-col gap-20">
+        <div className="mt-16 flex flex-col gap-24 sm:gap-28">
           {PROJECTS.map((project, i) => (
             <ProjectRow key={project.name} project={project} index={i} />
           ))}

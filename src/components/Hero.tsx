@@ -46,6 +46,9 @@ export default function Hero() {
 
   return (
     <section id="top" className="relative flex min-h-[92vh] items-center overflow-hidden">
+      {/* flowing gradient ribbon (primary hero motion) */}
+      <div className="hero-wave" aria-hidden="true" />
+
       {/* mouse-reactive glow */}
       <div
         ref={glowRef}
@@ -95,7 +98,10 @@ export default function Hero() {
           AI-Assisted Full-Stack Developer
         </motion.p>
 
-        <motion.p variants={item} className="mt-3 text-sm font-medium text-muted sm:text-base">
+        <motion.p
+          variants={item}
+          className="mt-3 text-sm font-semibold tracking-wide text-[#B7BDCC] transition-colors hover:text-primary sm:text-base"
+        >
           Python · FastAPI · Django/DRF · React · PostgreSQL
         </motion.p>
 

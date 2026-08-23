@@ -90,13 +90,18 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export const WORKFLOW: string[] = [
-  "Requirement",
-  "Architecture",
-  "AI-Assisted Implementation",
-  "Manual Review",
-  "Debugging & Testing",
-  "Delivery",
+export type WorkflowStep = { title: string; description: string };
+
+export const WORKFLOW: WorkflowStep[] = [
+  { title: "Requirement", description: "Understand the goal and constraints." },
+  { title: "Architecture", description: "Shape the data flow and technical approach." },
+  {
+    title: "AI-Assisted Implementation",
+    description: "Move fast with AI tools while keeping control.",
+  },
+  { title: "Manual Review", description: "Read, verify, and refine generated code." },
+  { title: "Debugging & Testing", description: "Validate behavior and edge cases." },
+  { title: "Delivery", description: "Ship a working, maintainable result." },
 ];
 
 export const SKILLS: { group: string; items: string[] }[] = [
